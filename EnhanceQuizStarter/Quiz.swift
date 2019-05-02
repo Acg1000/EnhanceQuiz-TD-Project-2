@@ -9,24 +9,9 @@
 import Foundation
 import GameKit
 
-// this is the structure for the questions
-struct Question {
-    let question: String
-    let possibleAnswers: [String]
-    let correctAnswer: Int
-    
-    //TODO ADD AN INTERNAL FUNCTION TO CHECK FOR CORRECT ANSWERS
-    func isCorrect(input: String) -> [Bool: String] {
-        if input == possibleAnswers[correctAnswer] {
-            return [true: ""]
-        } else {
-            return [false: possibleAnswers[correctAnswer]]
-        }
-    }
-}
 
 // Structure for storing and returning random questions
-struct QuestionProvider {
+struct Quiz {
     // question collection using the Question Struct
     let questions = [
         Question(question: "This was the only US President to serve more than two consecutive terms."    , possibleAnswers: ["George Washington", "Woodrow Wilson", "Andrew Jackson", "Franklin D. Roosevelt"], correctAnswer: 4),
@@ -40,12 +25,5 @@ struct QuestionProvider {
         Question(question: "Which country was the first to allow women to vote in national elections?", possibleAnswers: ["Poland","United States","Sweden","Sengal"], correctAnswer: 1),
         Question(question: "Which of these countries won the most medals in the 2012 Summer Games?", possibleAnswers: ["France","Germany","Japan","Great Britan"], correctAnswer: 4)
     ]
-    
-    // Returns a random question when called
-    func getRandomQuestion() -> Question {
-        let randomNumber = GKRandomSource.sharedRandom().nextInt(upperBound: questions.count)
-        return questions[randomNumber]
-    }
 }
 
-//Which of these countries won the most medals in the 2012 Summer Games?    France    Germany    Japan    Great Britian    4

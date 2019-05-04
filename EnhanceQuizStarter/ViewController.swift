@@ -18,15 +18,17 @@ class ViewController: UIViewController {
     var questionsAsked = 0
     var correctQuestions = 0
     var indexOfSelectedQuestion = 0
-    let questionProvider = QuestionProvider()
+    var gameManager = GameManager()
     
     var gameSound: SystemSoundID = 0
     
     // MARK: - Outlets
     
     @IBOutlet weak var questionField: UILabel!
-    @IBOutlet weak var trueButton: UIButton!
-    @IBOutlet weak var falseButton: UIButton!
+    @IBOutlet weak var button1: UIButton!
+    @IBOutlet weak var button2: UIButton!
+    @IBOutlet weak var button3: UIButton!
+    @IBOutlet weak var button4: UIButton!
     @IBOutlet weak var playAgainButton: UIButton!
 
     override func viewDidLoad() {
@@ -52,17 +54,29 @@ class ViewController: UIViewController {
     
     
     func displayQuestion() {
-        //Changed the question getting stuff to be different
-        let question = questionProvider.getRandomQuestion()
-        questionField.text = question.question
         
+        //Changed the question getting stuff to be different
+        // Get the first set of questions
+        let currentRound = gameManager.currentRound
+        let question = gameManager.questions[currentRound].question
+        let answers = gameManager.questions[currentRound].possibleAnswers
+        
+        // Setting all the strings to their respective labels and buttons
+        questionField.text = question
+        button1.setTitle(answers[0], for: .normal)
+        button2.setTitle(answers[1], for: .normal)
+        button3.setTitle(answers[2], for: .normal)
+        button4.setTitle(answers[3], for: .normal)
+
+        
+
         playAgainButton.isHidden = true
     }
     
     func displayScore() {
         // Hide the answer uttons
-        trueButton.isHidden = true
-        falseButton.isHidden = true
+//        trueButton.isHidden = true
+//        falseButton.isHidden = true
         
         // Display play again button
         playAgainButton.isHidden = false
@@ -71,15 +85,18 @@ class ViewController: UIViewController {
     }
     
     func nextRound() {
-        if questionsAsked == questionsPerRound {
-            // Game is over
-            displayScore()
+        // check if the round # is = to the number of questions
+        if gameManager.currentRound == gameManager.questions.count {
+            
+            //FINISH THE GAME
         } else {
-            // Continue game
-            displayQuestion()
+            
+            // Adds one to the round number and loads the next questions
+            gameManager.incrementRound()
         }
     }
     
+    // Adds delay to the loading of the next round
     func loadNextRound(delay seconds: Int) {
         // Converts a delay in seconds to nanoseconds as signed 64 bit integer
         let delay = Int64(NSEC_PER_SEC * UInt64(seconds))
@@ -95,33 +112,34 @@ class ViewController: UIViewController {
     // MARK: - Actions
     
     @IBAction func checkAnswer(_ sender: UIButton) {
-        // Increment the questions asked counter
-        questionsAsked += 1
+        let currentRound = gameManager.currentRound
+        let correctAnswer = gameManager.questions[currentRound].getCorrectAnswer()
         
-        let selectedQuestionDict = trivia[indexOfSelectedQuestion]
-        let correctAnswer = selectedQuestionDict["Answer"]
-        
-        if (sender === trueButton &&  correctAnswer == "True") || (sender === falseButton && correctAnswer == "False") {
-            correctQuestions += 1
-            questionField.text = "Correct!"
+        if sender.title(for: .normal) == correctAnswer {
+            // The answer is correct
+            // Play correct noise
+            // Change color of sender to green
+            sender.tintColor = UIColor(red: 0.675, green: 0.839, blue: 0.506, alpha: 1.00)
         } else {
-            questionField.text = "Sorry, wrong answer!"
+            // The answer is wrong
+            // Play incorrect noise
+            // Change color of sender to red and correct button to green
+            sender.tintColor = UIColor(red: 0.486, green: 0.239, blue: 0.220, alpha: 1.00)
         }
-        
         loadNextRound(delay: 2)
     }
     
     
     @IBAction func playAgain(_ sender: UIButton) {
         // Show the answer buttons
-        trueButton.isHidden = false
-        falseButton.isHidden = false
-        
-        questionsAsked = 0
-        correctQuestions = 0
+        button1.isHidden = true
+        button2.isHidden = true
+        button3.isHidden = true
+        button4.isHidden = true
+
+        // COMPLETLY RESET THE GAME MANAGER
+        gameManager.resetGame()
         nextRound()
     }
-    
-
 }
 

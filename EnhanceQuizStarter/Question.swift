@@ -21,4 +21,8 @@ struct Question {
             return [false: possibleAnswers[correctAnswer]]
         }
     }
+    
+    func getCorrectAnswer() -> String{
+        return possibleAnswers[correctAnswer]
+    }
 }

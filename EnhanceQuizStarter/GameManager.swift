@@ -7,14 +7,18 @@
 //
 import GameKit
 
-class GameManager {
-    
+struct GameManager {
+    var currentRound: Int
+    var questions: [Question]
+    var numberOfQuestions: Int
+
     // Returns a random question when called
     //create 4 random numbers that are not the same in a random order
     //store those numbers in an array of questions ready to use
     init() {
+        self.currentRound = 0
         let quiz = Quiz()
-        var numberOfQuestions = quiz.questions.count
+        numberOfQuestions = quiz.questions.count
         
 
         // We want to make sure that we have give half of the total questions in order to maintain a good level of randomness
@@ -24,9 +28,16 @@ class GameManager {
             numberOfQuestions = (numberOfQuestions - 1) / 2
         }
         
-        
+        self.questions = []
+        self.questions = generateQuestions(count: numberOfQuestions)
     }
     
+    // increments the round counter by 1 each time its called
+    mutating func incrementRound() {
+        currentRound += 1
+    }
+    
+    // Generates all the questions depending on the number of questions in the Quiz array
     func generateQuestions(count: Int) -> [Question] {
         let quiz = Quiz()
         var questionNumbers = [Int]()
@@ -46,6 +57,23 @@ class GameManager {
         }
         
         return selectedQuestions
+    }
+    
+    mutating func resetGame() {
+        currentRound = 0
+        let quiz = Quiz()
+        numberOfQuestions = quiz.questions.count
+        
+        
+        // We want to make sure that we have give half of the total questions in order to maintain a good level of randomness
+        if numberOfQuestions % 2 == 0 {
+            numberOfQuestions = numberOfQuestions / 2
+        } else {
+            numberOfQuestions = (numberOfQuestions - 1) / 2
+        }
+        
+        self.questions = []
+        self.questions = generateQuestions(count: numberOfQuestions)
     }
     
     

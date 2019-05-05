@@ -11,12 +11,14 @@ struct GameManager {
     var currentRound: Int
     var questions: [Question]
     var numberOfQuestions: Int
+    var score: Int
 
     // Returns a random question when called
     //create 4 random numbers that are not the same in a random order
     //store those numbers in an array of questions ready to use
     init() {
         self.currentRound = 0
+        self.score = 0
         let quiz = Quiz()
         numberOfQuestions = quiz.questions.count
         
@@ -43,19 +45,27 @@ struct GameManager {
         var questionNumbers = [Int]()
         var randomNumber = Int()
         var selectedQuestions = [Question]()
+        var counter = count
         
-        while count > 0 {
+        // Takes the number of questions that need to be generated and creates multiple random questions from that
+        while counter > 0 {
             randomNumber = GKRandomSource.sharedRandom().nextInt(upperBound: count)
+            
+            // If the random number is not in the array then add it.
             if !questionNumbers.contains(randomNumber) {
                 questionNumbers.append(randomNumber)
-
-            }
-            
-            for number in questionNumbers {
-                selectedQuestions.append(quiz.questions[number])
+                counter -= 1
             }
         }
+        // Print for logging purposes
+        print(questionNumbers)
+
+        // For every random number, grab the corresponding question from the list
+        for number in questionNumbers {
+            selectedQuestions.append(quiz.questions[number])
+        }
         
+        // Return the random selected questions
         return selectedQuestions
     }
     
@@ -63,8 +73,8 @@ struct GameManager {
         currentRound = 0
         let quiz = Quiz()
         numberOfQuestions = quiz.questions.count
-        
-        
+        score = 0
+
         // We want to make sure that we have give half of the total questions in order to maintain a good level of randomness
         if numberOfQuestions % 2 == 0 {
             numberOfQuestions = numberOfQuestions / 2

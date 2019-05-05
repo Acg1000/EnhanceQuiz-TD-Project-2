@@ -34,8 +34,8 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        loadGameStartSound()
-        playGameStartSound()
+//        loadGameStartSound()
+//        playGameStartSound()
         displayQuestion()
     }
     
@@ -61,22 +61,23 @@ class ViewController: UIViewController {
         let question = gameManager.questions[currentRound].question
         let answers = gameManager.questions[currentRound].possibleAnswers
         
+        //Set all the colors back to their normal colors
+        button1.backgroundColor = UIColor(red: 0.204, green: 0.471, blue: 0.576, alpha: 1.00)
+        button2.backgroundColor = UIColor(red: 0.204, green: 0.471, blue: 0.576, alpha: 1.00)
+        button3.backgroundColor = UIColor(red: 0.204, green: 0.471, blue: 0.576, alpha: 1.00)
+        button4.backgroundColor = UIColor(red: 0.204, green: 0.471, blue: 0.576, alpha: 1.00)
+        
         // Setting all the strings to their respective labels and buttons
         questionField.text = question
         button1.setTitle(answers[0], for: .normal)
         button2.setTitle(answers[1], for: .normal)
         button3.setTitle(answers[2], for: .normal)
         button4.setTitle(answers[3], for: .normal)
-
         
-
         playAgainButton.isHidden = true
     }
     
     func displayScore() {
-        // Hide the answer uttons
-//        trueButton.isHidden = true
-//        falseButton.isHidden = true
         
         // Display play again button
         playAgainButton.isHidden = false
@@ -85,14 +86,18 @@ class ViewController: UIViewController {
     }
     
     func nextRound() {
+        gameManager.incrementRound()
+
         // check if the round # is = to the number of questions
         if gameManager.currentRound == gameManager.questions.count {
             
-            //FINISH THE GAME
+            finishGame()
+//            view.backgroundColor = UIColor(red: 0.937, green: 0.514, blue: 0.690, alpha: 1.00)
+//            questionField.text = "FINISHED"
         } else {
             
             // Adds one to the round number and loads the next questions
-            gameManager.incrementRound()
+            displayQuestion()
         }
     }
     
@@ -109,6 +114,21 @@ class ViewController: UIViewController {
         }
     }
     
+    func finishGame() {
+        // Hide the buttons
+        button1.isHidden = true
+        button2.isHidden = true
+        button3.isHidden = true
+        button4.isHidden = true
+        
+        // Change the text
+        questionField.text = "You finished with a score of \(gameManager.score)"
+        
+        // Reveal a button that starts the button again
+        playAgainButton.isHidden = false
+
+    }
+    
     // MARK: - Actions
     
     @IBAction func checkAnswer(_ sender: UIButton) {
@@ -119,23 +139,27 @@ class ViewController: UIViewController {
             // The answer is correct
             // Play correct noise
             // Change color of sender to green
-            sender.tintColor = UIColor(red: 0.675, green: 0.839, blue: 0.506, alpha: 1.00)
+            gameManager.score += 1
+            sender.backgroundColor = UIColor(red: 0.675, green: 0.839, blue: 0.506, alpha: 1.00)
+            loadNextRound(delay: 2)
+
         } else {
             // The answer is wrong
             // Play incorrect noise
             // Change color of sender to red and correct button to green
-            sender.tintColor = UIColor(red: 0.486, green: 0.239, blue: 0.220, alpha: 1.00)
+            sender.backgroundColor = UIColor(red: 0.486, green: 0.239, blue: 0.220, alpha: 1.00)
+            loadNextRound(delay: 2)
+
         }
-        loadNextRound(delay: 2)
     }
     
     
     @IBAction func playAgain(_ sender: UIButton) {
         // Show the answer buttons
-        button1.isHidden = true
-        button2.isHidden = true
-        button3.isHidden = true
-        button4.isHidden = true
+        button1.isHidden = false
+        button2.isHidden = false
+        button3.isHidden = false
+        button4.isHidden = false
 
         // COMPLETLY RESET THE GAME MANAGER
         gameManager.resetGame()

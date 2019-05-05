@@ -79,10 +79,10 @@
                                     <action selector="checkAnswer:" destination="BYZ-38-t0r" eventType="touchUpInside" id="IJG-Pn-b8D"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sample Question" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dCF-BL-dDa">
-                                <rect key="frame" x="35" y="94" width="344" height="50"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sample Question" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dCF-BL-dDa">
+                                <rect key="frame" x="35" y="94" width="344" height="111"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="50" id="AUE-KL-oVJ"/>
+                                    <constraint firstAttribute="height" constant="111" id="AUE-KL-oVJ"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -117,14 +117,13 @@
                         <outlet property="button2" destination="E25-ts-c76" id="wtC-dA-rFB"/>
                         <outlet property="button3" destination="CSn-ih-qRR" id="W3e-bj-cdn"/>
                         <outlet property="button4" destination="qYh-2d-v8I" id="mJO-g5-EfT"/>
-                        <outlet property="falseButton" destination="qYh-2d-v8I" id="Kgl-kK-j1e"/>
                         <outlet property="playAgainButton" destination="eic-Nx-foS" id="fZz-Md-Y70"/>
                         <outlet property="questionField" destination="dCF-BL-dDa" id="HIQ-UX-KNe"/>
-                        <outlet property="trueButton" destination="CSn-ih-qRR" id="kyC-6T-ixm"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="47.826086956521742" y="20.758928571428569"/>
         </scene>
     </scenes>
 </document>

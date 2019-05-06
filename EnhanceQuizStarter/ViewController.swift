@@ -10,6 +10,7 @@ import UIKit
 import GameKit
 import AudioToolbox
 
+
 class ViewController: UIViewController {
     
     // MARK: - Properties
@@ -20,8 +21,15 @@ class ViewController: UIViewController {
     var gameManager = GameManager()
     
     var gameSound: SystemSoundID = 0
-    var correctSound: SystemSoundID = 1
-    var incorrectSound: SystemSoundID = 2
+//    var correctSound: SystemSoundID = 1
+//    var incorrectSound: SystemSoundID = 2
+    
+//    var audioPlayer: AVAudioPlayer?
+    var correctSoundPlayer: AVAudioPlayer?
+    var incorrectSoundPlayer: AVAudioPlayer?
+    
+   
+
     
     // MARK: - Outlets
     
@@ -41,18 +49,35 @@ class ViewController: UIViewController {
     
     // MARK: - Helpers
     
+    // Loads up all the game sounds
     func loadGameSounds() {
-        let path1 = Bundle.main.path(forResource: "GameSound", ofType: "wav")
-        let soundUrl1 = URL(fileURLWithPath: path1!)
-        AudioServicesCreateSystemSoundID(soundUrl1 as CFURL, &gameSound)
+        // starting game sound
+        let startingSoundPath = Bundle.main.path(forResource: "GameSound", ofType: "wav")
+        let startingURL = URL(fileURLWithPath: startingSoundPath!)
+        AudioServicesCreateSystemSoundID(startingURL as CFURL, &gameSound)
         
-        let path2 = Bundle.main.path(forResource: "CorrectSound", ofType: "wav")
-        let soundUrl2 = URL(fileURLWithPath: path2!)
-        AudioServicesCreateSystemSoundID(soundUrl2 as CFURL, &correctSound)
-
-        let path3 = Bundle.main.path(forResource: "IncorrectSound", ofType: "wav")
-        let soundUrl3 = URL(fileURLWithPath: path3!)
-        AudioServicesCreateSystemSoundID(soundUrl3 as CFURL, &incorrectSound)
+        // Tried to follow a tutorial to get the sounds to work... https://jayeshkawli.ghost.io/playing-audio-file-on-ios-with-swift/
+        // Correct Sound
+        do {
+            if let correctSoundURL = Bundle.main.path(forResource: "CorrectSound", ofType: "wav") {
+                correctSoundPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: correctSoundURL))
+            } else {
+                print("There is no file")
+            }
+        } catch let error {
+             print("Can't play the audio file failed with an error \(error.localizedDescription)")
+        }
+        
+        // Incorrect Sound
+        do {
+            if let incorrectSoundURL = Bundle.main.path(forResource: "CorrectSound", ofType: "wav") {
+                incorrectSoundPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: incorrectSoundURL))
+            } else {
+                print("There is no file")
+            }
+        } catch let error {
+            print("Can't play the audio file failed with an error \(error.localizedDescription)")
+        }
         
         playGameStartSound()
     }
@@ -61,14 +86,18 @@ class ViewController: UIViewController {
         AudioServicesPlaySystemSound(gameSound)
     }
     
+    // When called should play the Incorrect Sound
     func playWrongSound() {
-        AudioServicesPlaySystemSound(correctSound)
-
+        
+        // This is also frm the tutorial
+        incorrectSoundPlayer?.play()
+        print("incorrect sound")
     }
     
+    // When called should play the Correct Sound
     func playRightSound() {
-        AudioServicesPlaySystemSound(incorrectSound)
-
+        correctSoundPlayer?.play()
+        print("correct sound")
     }
     
     
@@ -81,35 +110,42 @@ class ViewController: UIViewController {
         let question = gameManager.questions[currentRound].question
         let answers = gameManager.questions[currentRound].possibleAnswers
         
+        // Set the button background color back to the normal color
         button1.backgroundColor = UIColor(red: 0.204, green: 0.471, blue: 0.576, alpha: 1.00)
         button2.backgroundColor = UIColor(red: 0.204, green: 0.471, blue: 0.576, alpha: 1.00)
         button3.backgroundColor = UIColor(red: 0.204, green: 0.471, blue: 0.576, alpha: 1.00)
         button4.backgroundColor = UIColor(red: 0.204, green: 0.471, blue: 0.576, alpha: 1.00)
         
+        // Allows them to be clicked
         button1.isEnabled = true
         button2.isEnabled = true
         button3.isEnabled = true
         button4.isEnabled = true
         
+        // Sets the label to display the question
         questionField.text = question
         
+        // Sets the buttons to display the possible answers
         button1.setTitle(answers[0], for: .normal)
         button2.setTitle(answers[1], for: .normal)
         button3.setTitle(answers[2], for: .normal)
         
         playAgainButton.isHidden = true
         
+        // If there are 3 possible answers
         if gameManager.questions[currentRound].possibleAnswers.count == 3 {
             
             // Hide the fourth button
             button4.isHidden = true
             
+        // if there are 4 possible answers
         } else if gameManager.questions[currentRound].possibleAnswers.count == 4 {
             
             // Set the fourth button title and unhide the 4th button
             button4.setTitle(answers[3], for: .normal)
             button4.isHidden = false
         }
+        // Start the 15 second timer
         beginRoundCounter(currentRound: currentRound)
     }
     
@@ -193,6 +229,12 @@ class ViewController: UIViewController {
     @IBAction func checkAnswer(_ sender: UIButton) {
         let currentRound = gameManager.currentRound
         let correctAnswer = gameManager.questions[currentRound].getCorrectAnswer()
+        
+        // Disables the buttons so they can not be clicked again
+        self.button1.isEnabled = false
+        self.button2.isEnabled = false
+        self.button3.isEnabled = false
+        self.button4.isEnabled = false
         
         // OLD CODE
         if sender.title(for: .normal) == correctAnswer {

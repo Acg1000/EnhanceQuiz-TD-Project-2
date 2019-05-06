@@ -31,7 +31,7 @@ struct GameManager {
         }
         
         self.questions = []
-        self.questions = generateQuestions(count: numberOfQuestions)
+        self.questions = generateQuestions(count: numberOfQuestions, upperBound: quiz.questions.count)
     }
     
     // increments the round counter by 1 each time its called
@@ -40,7 +40,7 @@ struct GameManager {
     }
     
     // Generates all the questions depending on the number of questions in the Quiz array
-    func generateQuestions(count: Int) -> [Question] {
+    func generateQuestions(count: Int, upperBound: Int) -> [Question] {
         let quiz = Quiz()
         var questionNumbers = [Int]()
         var randomNumber = Int()
@@ -49,7 +49,7 @@ struct GameManager {
         
         // Takes the number of questions that need to be generated and creates multiple random questions from that
         while counter > 0 {
-            randomNumber = GKRandomSource.sharedRandom().nextInt(upperBound: count)
+            randomNumber = GKRandomSource.sharedRandom().nextInt(upperBound: upperBound)
             
             // If the random number is not in the array then add it.
             if !questionNumbers.contains(randomNumber) {
@@ -69,6 +69,10 @@ struct GameManager {
         return selectedQuestions
     }
     
+    mutating func isCorrect() {
+        score += 1
+    }
+    
     mutating func resetGame() {
         currentRound = 0
         let quiz = Quiz()
@@ -83,7 +87,7 @@ struct GameManager {
         }
         
         self.questions = []
-        self.questions = generateQuestions(count: numberOfQuestions)
+        self.questions = generateQuestions(count: numberOfQuestions, upperBound: quiz.questions.count)
     }
     
     

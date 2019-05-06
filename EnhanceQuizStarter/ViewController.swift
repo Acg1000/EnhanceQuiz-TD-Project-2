@@ -17,10 +17,11 @@ class ViewController: UIViewController {
     let questionsPerRound = 4
     var questionsAsked = 0
     var correctQuestions = 0
-    var indexOfSelectedQuestion = 0
     var gameManager = GameManager()
     
     var gameSound: SystemSoundID = 0
+    var correctSound: SystemSoundID = 1
+    var incorrectSound: SystemSoundID = 2
     
     // MARK: - Outlets
     
@@ -34,21 +35,40 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        loadGameStartSound()
-//        playGameStartSound()
+        loadGameSounds()
         displayQuestion()
     }
     
     // MARK: - Helpers
     
-    func loadGameStartSound() {
-        let path = Bundle.main.path(forResource: "GameSound", ofType: "wav")
-        let soundUrl = URL(fileURLWithPath: path!)
-        AudioServicesCreateSystemSoundID(soundUrl as CFURL, &gameSound)
+    func loadGameSounds() {
+        let path1 = Bundle.main.path(forResource: "GameSound", ofType: "wav")
+        let soundUrl1 = URL(fileURLWithPath: path1!)
+        AudioServicesCreateSystemSoundID(soundUrl1 as CFURL, &gameSound)
+        
+        let path2 = Bundle.main.path(forResource: "CorrectSound", ofType: "wav")
+        let soundUrl2 = URL(fileURLWithPath: path2!)
+        AudioServicesCreateSystemSoundID(soundUrl2 as CFURL, &correctSound)
+
+        let path3 = Bundle.main.path(forResource: "IncorrectSound", ofType: "wav")
+        let soundUrl3 = URL(fileURLWithPath: path3!)
+        AudioServicesCreateSystemSoundID(soundUrl3 as CFURL, &incorrectSound)
+        
+        playGameStartSound()
     }
     
     func playGameStartSound() {
         AudioServicesPlaySystemSound(gameSound)
+    }
+    
+    func playWrongSound() {
+        AudioServicesPlaySystemSound(correctSound)
+
+    }
+    
+    func playRightSound() {
+        AudioServicesPlaySystemSound(incorrectSound)
+
     }
     
     
@@ -61,20 +81,60 @@ class ViewController: UIViewController {
         let question = gameManager.questions[currentRound].question
         let answers = gameManager.questions[currentRound].possibleAnswers
         
-        //Set all the colors back to their normal colors
         button1.backgroundColor = UIColor(red: 0.204, green: 0.471, blue: 0.576, alpha: 1.00)
         button2.backgroundColor = UIColor(red: 0.204, green: 0.471, blue: 0.576, alpha: 1.00)
         button3.backgroundColor = UIColor(red: 0.204, green: 0.471, blue: 0.576, alpha: 1.00)
         button4.backgroundColor = UIColor(red: 0.204, green: 0.471, blue: 0.576, alpha: 1.00)
         
-        // Setting all the strings to their respective labels and buttons
+        button1.isEnabled = true
+        button2.isEnabled = true
+        button3.isEnabled = true
+        button4.isEnabled = true
+        
         questionField.text = question
+        
         button1.setTitle(answers[0], for: .normal)
         button2.setTitle(answers[1], for: .normal)
         button3.setTitle(answers[2], for: .normal)
-        button4.setTitle(answers[3], for: .normal)
         
         playAgainButton.isHidden = true
+        
+        if gameManager.questions[currentRound].possibleAnswers.count == 3 {
+            
+            // Hide the fourth button
+            button4.isHidden = true
+            
+        } else if gameManager.questions[currentRound].possibleAnswers.count == 4 {
+            
+            // Set the fourth button title and unhide the 4th button
+            button4.setTitle(answers[3], for: .normal)
+            button4.isHidden = false
+        }
+        beginRoundCounter(currentRound: currentRound)
+    }
+    
+    // 15 Second Round Counter
+    func beginRoundCounter(currentRound: Int) {
+        // Converts a delay in seconds to nanoseconds as signed 64 bit integer
+        let delay = Int64(NSEC_PER_SEC * UInt64(15))
+        // Calculates a time value to execute the method given current time and delay
+        let dispatchTime = DispatchTime.now() + Double(delay) / Double(NSEC_PER_SEC)
+        
+        // Executes the nextRound method at the dispatch time on the main queue
+        DispatchQueue.main.asyncAfter(deadline: dispatchTime) {
+            if currentRound == self.gameManager.currentRound {
+                // Time has expired
+                self.button1.isEnabled = false
+                self.button2.isEnabled = false
+                self.button3.isEnabled = false
+                self.button4.isEnabled = false
+                
+                self.questionField.text = "You are out of time! Next Question"
+                self.loadNextRound(delay: 3)
+            } else {
+                //Time has not expired do nothing
+            }
+        }
     }
     
     func displayScore() {
@@ -92,8 +152,6 @@ class ViewController: UIViewController {
         if gameManager.currentRound == gameManager.questions.count {
             
             finishGame()
-//            view.backgroundColor = UIColor(red: 0.937, green: 0.514, blue: 0.690, alpha: 1.00)
-//            questionField.text = "FINISHED"
         } else {
             
             // Adds one to the round number and loads the next questions
@@ -131,25 +189,39 @@ class ViewController: UIViewController {
     
     // MARK: - Actions
     
+    // Move this to the inside of Game Manager
     @IBAction func checkAnswer(_ sender: UIButton) {
         let currentRound = gameManager.currentRound
         let correctAnswer = gameManager.questions[currentRound].getCorrectAnswer()
         
+        // OLD CODE
         if sender.title(for: .normal) == correctAnswer {
-            // The answer is correct
-            // Play correct noise
-            // Change color of sender to green
-            gameManager.score += 1
+            
+            // Set Button Color
             sender.backgroundColor = UIColor(red: 0.675, green: 0.839, blue: 0.506, alpha: 1.00)
+            
+            // Change the score
+            gameManager.isCorrect()
+            
+            // Load next round
             loadNextRound(delay: 2)
+            
+            // Play sounds
+            playRightSound()
 
         } else {
-            // The answer is wrong
-            // Play incorrect noise
-            // Change color of sender to red and correct button to green
+            
+            // Change Button Color
             sender.backgroundColor = UIColor(red: 0.486, green: 0.239, blue: 0.220, alpha: 1.00)
+            
+            // Change Text information to show correct answer
+            questionField.text = "The correct answer is \(gameManager.questions[currentRound].getCorrectAnswer())"
+            
+            //Load the next round
             loadNextRound(delay: 2)
-
+            
+            //Play Sounds
+            playWrongSound()
         }
     }
     

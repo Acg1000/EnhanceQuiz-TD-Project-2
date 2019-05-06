@@ -23,6 +23,6 @@ struct Question {
     }
     
     func getCorrectAnswer() -> String{
-        return possibleAnswers[correctAnswer-1]
+        return possibleAnswers[correctAnswer]
     }
 }

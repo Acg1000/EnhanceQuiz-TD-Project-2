@@ -19,10 +19,7 @@ class ViewController: UIViewController {
     var questionsAsked = 0
     var correctQuestions = 0
     var gameManager = GameManager()
-    
-    var gameSound: SystemSoundID = 0
-//    var correctSound: SystemSoundID = 1
-//    var incorrectSound: SystemSoundID = 2
+    var soundManager = SoundManager()
     
 //    var audioPlayer: AVAudioPlayer?
     var correctSoundPlayer: AVAudioPlayer?
@@ -43,64 +40,19 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        loadGameSounds()
         displayQuestion()
+        loadGameSounds()
+        soundManager.playStartSound()
     }
     
-    // MARK: - Helpers
     
-    // Loads up all the game sounds
     func loadGameSounds() {
-        // starting game sound
-        let startingSoundPath = Bundle.main.path(forResource: "GameSound", ofType: "wav")
-        let startingURL = URL(fileURLWithPath: startingSoundPath!)
-        AudioServicesCreateSystemSoundID(startingURL as CFURL, &gameSound)
-        
-        // Tried to follow a tutorial to get the sounds to work... https://jayeshkawli.ghost.io/playing-audio-file-on-ios-with-swift/
-        // Correct Sound
-        do {
-            if let correctSoundURL = Bundle.main.path(forResource: "CorrectSound", ofType: "wav") {
-                correctSoundPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: correctSoundURL))
-            } else {
-                print("There is no file")
-            }
-        } catch let error {
-             print("Can't play the audio file failed with an error \(error.localizedDescription)")
-        }
-        
-        // Incorrect Sound
-        do {
-            if let incorrectSoundURL = Bundle.main.path(forResource: "CorrectSound", ofType: "wav") {
-                incorrectSoundPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: incorrectSoundURL))
-            } else {
-                print("There is no file")
-            }
-        } catch let error {
-            print("Can't play the audio file failed with an error \(error.localizedDescription)")
-        }
-        
-        playGameStartSound()
+        soundManager.loadStartSound()
+        soundManager.loadCorrectSound()
+        soundManager.loadIncorrectSound()
+        print("Sounds have been loaded")
     }
-    
-    func playGameStartSound() {
-        AudioServicesPlaySystemSound(gameSound)
-    }
-    
-    // When called should play the Incorrect Sound
-    func playWrongSound() {
-        
-        // This is also frm the tutorial
-        incorrectSoundPlayer?.play()
-        print("incorrect sound")
-    }
-    
-    // When called should play the Correct Sound
-    func playRightSound() {
-        correctSoundPlayer?.play()
-        print("correct sound")
-    }
-    
-    
+
     
     func displayQuestion() {
         
@@ -249,8 +201,8 @@ class ViewController: UIViewController {
             loadNextRound(delay: 2)
             
             // Play sounds
-            playRightSound()
-
+            soundManager.playCorrectSound()
+            
         } else {
             
             // Change Button Color
@@ -263,7 +215,7 @@ class ViewController: UIViewController {
             loadNextRound(delay: 2)
             
             //Play Sounds
-            playWrongSound()
+        soundManager.playIncorrectSound()
         }
     }
     

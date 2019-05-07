@@ -66,6 +66,15 @@ struct GameManager {
         return selectedQuestions
     }
     
+    // Checks to see if the selected answer = the correct one
+    func checkAnswer(selectedAnseer: String, currentRound: Int) -> Bool {
+        if selectedAnseer == questions[currentRound].getCorrectAnswer() {
+            return true
+        } else {
+            return false
+        }
+    }
+    
     // When called increse the score by one
     mutating func isCorrect() {
         score += 1

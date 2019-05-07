@@ -165,7 +165,8 @@ class ViewController: UIViewController {
     // Move this to the inside of Game Manager
     @IBAction func checkAnswer(_ sender: UIButton) {
         let currentRound = gameManager.currentRound
-        let correctAnswer = gameManager.questions[currentRound].getCorrectAnswer()
+        let selectedAnswer = sender.title(for: .normal)
+        let isCorrect = gameManager.checkAnswer(selectedAnseer: selectedAnswer!, currentRound: currentRound)
         
         // Disables the buttons so they can not be clicked again
         self.button1.isEnabled = false
@@ -173,8 +174,8 @@ class ViewController: UIViewController {
         self.button3.isEnabled = false
         self.button4.isEnabled = false
         
-        // OLD CODE
-        if sender.title(for: .normal) == correctAnswer {
+        
+        if isCorrect {
             
             // Set Button Color
             sender.backgroundColor = UIColor(red: 0.675, green: 0.839, blue: 0.506, alpha: 1.00)
@@ -201,9 +202,10 @@ class ViewController: UIViewController {
             
             //Play Sounds
             soundManager.playIncorrectSound()
+            
         }
     }
-    
+
     
     @IBAction func playAgain(_ sender: UIButton) {
         // Show the answer buttons

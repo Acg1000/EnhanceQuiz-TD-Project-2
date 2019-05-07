@@ -13,15 +13,7 @@ struct Question {
     let possibleAnswers: [String]
     let correctAnswer: Int
     
-    //TODO ADD AN INTERNAL FUNCTION TO CHECK FOR CORRECT ANSWERS
-    func isCorrect(input: String) -> [Bool: String] {
-        if input == possibleAnswers[correctAnswer] {
-            return [true: ""]
-        } else {
-            return [false: possibleAnswers[correctAnswer]]
-        }
-    }
-    
+    // Returns the correct answer
     func getCorrectAnswer() -> String{
         return possibleAnswers[correctAnswer]
     }

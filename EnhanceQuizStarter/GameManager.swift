@@ -13,9 +13,6 @@ struct GameManager {
     var numberOfQuestions: Int
     var score: Int
 
-    // Returns a random question when called
-    //create 4 random numbers that are not the same in a random order
-    //store those numbers in an array of questions ready to use
     init() {
         self.currentRound = 0
         self.score = 0
@@ -69,10 +66,12 @@ struct GameManager {
         return selectedQuestions
     }
     
+    // When called increse the score by one
     mutating func isCorrect() {
         score += 1
     }
     
+    // When called, reset the game
     mutating func resetGame() {
         currentRound = 0
         let quiz = Quiz()
@@ -89,14 +88,4 @@ struct GameManager {
         self.questions = []
         self.questions = generateQuestions(count: numberOfQuestions, upperBound: quiz.questions.count)
     }
-    
-    
-//    func getRandomQuestion(questionCount: Int) -> Question {
-//        let randomNumber = GKRandomSource.sharedRandom().nextInt(upperBound: questionCount)
-//        return questions[randomNumber]
-//    }
-    
-    
-    //function that gives one of the random questions and removes it from the ready to use questions array
-    //
 }

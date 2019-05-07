@@ -13,23 +13,15 @@ import AudioToolbox
 
 class ViewController: UIViewController {
     
-    // MARK: - Properties
-    
+    // Global Vars
     let questionsPerRound = 4
     var questionsAsked = 0
     var correctQuestions = 0
     var gameManager = GameManager()
     var soundManager = SoundManager()
     
-//    var audioPlayer: AVAudioPlayer?
-    var correctSoundPlayer: AVAudioPlayer?
-    var incorrectSoundPlayer: AVAudioPlayer?
     
-   
-
-    
-    // MARK: - Outlets
-    
+    // Outlets
     @IBOutlet weak var questionField: UILabel!
     @IBOutlet weak var button1: UIButton!
     @IBOutlet weak var button2: UIButton!
@@ -45,7 +37,7 @@ class ViewController: UIViewController {
         soundManager.playStartSound()
     }
     
-    
+    // Load all the game sounds from SoundManager
     func loadGameSounds() {
         soundManager.loadStartSound()
         soundManager.loadCorrectSound()
@@ -125,13 +117,6 @@ class ViewController: UIViewController {
         }
     }
     
-    func displayScore() {
-        
-        // Display play again button
-        playAgainButton.isHidden = false
-        
-        questionField.text = "Way to go!\nYou got \(correctQuestions) out of \(questionsPerRound) correct!"
-    }
     
     func nextRound() {
         gameManager.incrementRound()
@@ -168,7 +153,7 @@ class ViewController: UIViewController {
         button4.isHidden = true
         
         // Change the text
-        questionField.text = "You finished with a score of \(gameManager.score)"
+        questionField.text = "You finished with a score of \(gameManager.score) out of \(gameManager.questions.count)"
         
         // Reveal a button that starts the button again
         playAgainButton.isHidden = false
@@ -215,7 +200,7 @@ class ViewController: UIViewController {
             loadNextRound(delay: 2)
             
             //Play Sounds
-        soundManager.playIncorrectSound()
+            soundManager.playIncorrectSound()
         }
     }
     
@@ -229,7 +214,7 @@ class ViewController: UIViewController {
 
         // COMPLETLY RESET THE GAME MANAGER
         gameManager.resetGame()
-        nextRound()
+        displayQuestion()
     }
 }
 

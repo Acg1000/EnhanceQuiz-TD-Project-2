@@ -19,9 +19,11 @@ class ViewController: UIViewController {
     var correctQuestions = 0
     var gameManager = GameManager()
     var soundManager = SoundManager()
+    var isTimerOn = false
     
     
     // Outlets
+    @IBOutlet weak var timerField: UILabel!
     @IBOutlet weak var questionField: UILabel!
     @IBOutlet weak var button1: UIButton!
     @IBOutlet weak var button2: UIButton!
@@ -68,6 +70,7 @@ class ViewController: UIViewController {
         
         // Sets the label to display the question
         questionField.text = question
+        timerField.text = "15"
         
         // Sets the buttons to display the possible answers
         button1.setTitle(answers[0], for: .normal)
@@ -90,7 +93,52 @@ class ViewController: UIViewController {
             button4.isHidden = false
         }
         // Start the 15 second timer
-        beginRoundCounter(currentRound: currentRound)
+//        beginRoundCounter(currentRound: currentRound)
+        isTimerOn = true
+        roundTimer(currentRound: currentRound, withTimerOf: 15)
+    }
+    
+    // Allows the main timer to function
+    func roundTimer(currentRound: Int, withTimerOf time: Int) {
+        var counter = time
+        // Converts a delay in seconds to nanoseconds as signed 64 bit integer
+        let delay = Int64(NSEC_PER_SEC * UInt64(1))
+        // Calculates a time value to execute the method given current time and delay
+        let dispatchTime = DispatchTime.now() + Double(delay) / Double(NSEC_PER_SEC)
+        
+        // Executes the nextRound method at the dispatch time on the main queue
+        DispatchQueue.main.asyncAfter(deadline: dispatchTime) {
+            if self.isTimerOn {
+                // when the counter runs to 0
+                if counter == 0 {
+                    
+                    // if the
+                    if currentRound == self.gameManager.currentRound {
+                        
+                        self.button1.isEnabled = false
+                        self.button2.isEnabled = false
+                        self.button3.isEnabled = false
+                        self.button4.isEnabled = false
+                        
+                        self.questionField.text = "You are out of time! Next Question"
+                        self.loadNextRound(delay: 3)
+                        
+                    } else {
+                        // Do nothing, the timer does not apply to this round
+                    }
+                } else {
+                    
+                    if currentRound == self.gameManager.currentRound {
+                        counter -= 1
+                        self.timerField.text = "\(counter)"
+                        print(counter)
+                        self.roundTimer(currentRound: currentRound, withTimerOf: counter)
+                    } else {
+                        // Do nothing, the timer does not apply to this round
+                    }
+                }
+            }
+        }
     }
     
     // 15 Second Round Counter
@@ -152,6 +200,8 @@ class ViewController: UIViewController {
         button3.isHidden = true
         button4.isHidden = true
         
+        timerField.isHidden = true
+        
         // Change the text
         questionField.text = "You finished with a score of \(gameManager.score) out of \(gameManager.questions.count)"
         
@@ -173,6 +223,7 @@ class ViewController: UIViewController {
         self.button2.isEnabled = false
         self.button3.isEnabled = false
         self.button4.isEnabled = false
+        isTimerOn = false
         
         
         if isCorrect {

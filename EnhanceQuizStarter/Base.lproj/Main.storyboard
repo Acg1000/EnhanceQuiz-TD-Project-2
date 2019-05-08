@@ -88,6 +88,12 @@
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fZg-a5-CEg">
+                                <rect key="frame" x="152" y="73" width="111" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="0.031372549020000001" green="0.16862745100000001" blue="0.24313725489999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -105,9 +111,12 @@
                             <constraint firstItem="qYh-2d-v8I" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="35" id="Wgj-LU-Pdb"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="dCF-BL-dDa" secondAttribute="trailing" constant="35" id="X52-Bd-YTP"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="CSn-ih-qRR" secondAttribute="trailing" constant="35" id="XU6-AI-RcK"/>
+                            <constraint firstItem="fZg-a5-CEg" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="152" id="ahL-bF-PjM"/>
                             <constraint firstItem="CSn-ih-qRR" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="35" id="bF8-8F-aGh"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="fZg-a5-CEg" secondAttribute="trailing" constant="151" id="gd0-Xd-tun"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="XLT-dF-7BU" secondAttribute="trailing" constant="35" id="k4x-UW-bHN"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="eic-Nx-foS" secondAttribute="trailing" constant="35" id="qF6-Z9-GEa"/>
+                            <constraint firstItem="fZg-a5-CEg" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="29" id="tYe-2N-koP"/>
                             <constraint firstItem="CSn-ih-qRR" firstAttribute="top" secondItem="E25-ts-c76" secondAttribute="bottom" constant="20" id="zHz-2N-9dv"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
@@ -119,6 +128,7 @@
                         <outlet property="button4" destination="qYh-2d-v8I" id="mJO-g5-EfT"/>
                         <outlet property="playAgainButton" destination="eic-Nx-foS" id="fZz-Md-Y70"/>
                         <outlet property="questionField" destination="dCF-BL-dDa" id="HIQ-UX-KNe"/>
+                        <outlet property="timerField" destination="fZg-a5-CEg" id="OYI-pt-yuD"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
